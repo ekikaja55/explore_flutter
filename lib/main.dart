@@ -44,6 +44,7 @@ class MyAppBar extends StatelessWidget{
   }
 }
 
+
 // kerangka custom untuk halaman nya
 class MyScaffold extends StatelessWidget{
   const MyScaffold({super.key});
@@ -71,6 +72,147 @@ class MyScaffold extends StatelessWidget{
   
 }
 
+// bikin komponen button manual
+class MyButton extends StatelessWidget{
+  const MyButton({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: (){
+        print("My Button was tapped");
+      },
+      child: Container(
+        height: 50,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.lightGreen[500],
+        ),
+       child: const Center(child: Text("Engage"),), 
+      ),
+    );
+  }
+}
+
+// komponen class statefull untuk button counter
+// setup state counter btn pakai statefull 
+
+// Penjelasan "Satu Paket" Stateful Widget
+// Bayangkan StatefulWidget itu seperti sebuah Remote TV:
+// CounterBtn (Widget): Ini adalah fisiknya (plastik remotnya). Ini yang kamu panggil di kode lain.
+// _CounterState (State): Ini adalah mesin di dalamnya (baterai dan chip).
+//  Dia yang menyimpan data angka dan melakukan perubahan.
+class CounterBtn extends StatefulWidget{
+  const CounterBtn({super.key});
+  // @override
+  // State<StatefulWidget> createState() {
+  //   return _CounterState();
+  // }
+  @override
+  State<StatefulWidget> createState()=>_CounterState();
+}
+
+// setup statenya
+class _CounterState extends State<CounterBtn>{
+  int _counter = 0;
+
+  void _increment(){
+    setState(() {
+      _counter++;
+    });
+  }
+
+  void _decrement(){
+    setState(() {
+      _counter--;
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      // konsepnya sama kaya TS, jadi kalo di define <Widget> sama kaya ngunci kalo type didalam children ini
+      // cuma boleh widget
+      // children itu buat banyak widget child itu cuma buat satu aja tergantung konteks mau pakai pembungkus apa
+      children: <Widget>[
+        ElevatedButton(onPressed: _increment, child: const Text("Increment")),
+        const SizedBox(width: 16),
+        ElevatedButton(onPressed: _decrement, child: const Text("Decrement")),
+        const SizedBox(width: 16),
+        Text("Count: $_counter")
+      ],
+    );
+  }
+  
+}
+
+// bikin komponen app bar + body didalam scaffold bedanya ini pakai komponen dari flutter nya
+// const tidak boleh berisi fungsi
+class TutorialHome extends StatelessWidget{
+  const TutorialHome({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar:AppBar(
+        leading: IconButton(
+          onPressed: (){
+            print("btn navigasi ditekan");
+          }, 
+          icon: Icon(Icons.menu),
+          tooltip: "Navigation Home",
+          ),
+          title: const Text('Example Title'),
+          actions: [
+            IconButton(
+              onPressed: (){
+                print("btn search ditekan");
+              }, 
+              icon: Icon(Icons.search),
+              tooltip: "Search",
+            )
+          ],
+      ) ,
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),//kasih padding defaultnya 8 pixel semua sisi disini aku atur 20 pixel
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const Center(child: Text("hello world")),
+           
+            const SizedBox(height: 20),// jeda antara teks dengan MyButton
+              // agar MyButton tidak selebar layar, bungkus dengan Center dikombo SizedBox
+            const Center(
+              child: SizedBox(
+                width: 200,
+                child: MyButton(),
+              ),
+            ),
+            
+            const SizedBox(height: 20),
+            
+            const Center(
+              child: SizedBox(
+                width: 400,
+                child: CounterBtn(),//panggil statefull widget nya BUKAN STATENYA LANGSUNG
+              ),
+            )
+          ],
+        ),
+        ),
+        //FAB
+      floatingActionButton: FloatingActionButton(
+                            onPressed: (){
+                              print("FAB ditekan");
+                            },
+                            tooltip: "add",
+                            child: Icon(Icons.add),
+                            ),
+    );
+  }
+  
+}
+
+
 // main entry jantung app
 void main() {
   // wajib ada 
@@ -79,9 +221,16 @@ void main() {
     // ada title digunakan untuk kebutuhan perpindahan OS senangkepku,
     // ada home buat "isinya" dan pakai SafeArea buat kebutuhan nanti kalo dimobile layoutingnya ga nabrak
     // sama notch kamera atau bar indikator di hp di web emang ga terlalu keliatan tapi di mobile bakalan ngaruh
+    
+    // const MaterialApp(
+    //   title: "My App", 
+    //   home: SafeArea(child: MyScaffold()), 
+    // )
+
     const MaterialApp(
+      debugShowCheckedModeBanner: false,//buat ngilagin label "debug"
       title: "My App", 
-      home: SafeArea(child: MyScaffold()), 
+      home: TutorialHome(), 
     )
   );
 }
