@@ -119,12 +119,15 @@ class _CounterState extends State<CounterBtn>{
   void _increment(){
     setState(() {
       _counter++;
+      print("increment v1 ke triger, _counter:$_counter");
+
     });
   }
 
   void _decrement(){
     setState(() {
       _counter--;
+      print("decrement v1 ke triger, _counter:$_counter");
     });
   }
   @override
@@ -135,13 +138,94 @@ class _CounterState extends State<CounterBtn>{
       // cuma boleh widget
       // children itu buat banyak widget child itu cuma buat satu aja tergantung konteks mau pakai pembungkus apa
       children: <Widget>[
-        ElevatedButton(onPressed: _increment, child: const Text("Increment")),
+        ElevatedButton(onPressed: _increment, child: const Text("Increment V1")),
         const SizedBox(width: 16),
-        ElevatedButton(onPressed: _decrement, child: const Text("Decrement")),
+        ElevatedButton(onPressed: _decrement, child: const Text("Decrement V2")),
         const SizedBox(width: 16),
         Text("Count: $_counter")
       ],
     );
+  }
+  
+}
+
+// dibawah ini adalah variasi handling state lebih reusable dan profesional dengan memisahkan 
+// menjadi 3 widget kecil 
+// CounterDisplay -> cuma untuk nampilin display
+// CounterIncrementator -> cuma untuk jadi tombol, dia tidak tau angka berapa yang sedang di tampilankan
+// Counter -> sebagai "otak" handling state nya 
+
+class CounterDisplay extends StatelessWidget{
+  const CounterDisplay({required this.count,super.key});
+  final int count;
+  @override
+  Widget build(BuildContext context) {
+   return Text("Count : $count");
+  }
+}
+
+class CounterIncrementator extends StatelessWidget{
+  const CounterIncrementator({required this.onPressed,super.key});
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+  return ElevatedButton(
+    onPressed: onPressed, 
+    child: const Text("Increment V2")
+    );
+  }
+} 
+
+class CounterDecrementator extends StatelessWidget{
+  const CounterDecrementator({required this.onPressed,super.key});
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+  return ElevatedButton(
+    onPressed: onPressed, 
+    child: const Text("Decrement V2")
+    );
+  }
+} 
+
+class CounterBtnV2 extends StatefulWidget{
+  const CounterBtnV2({super.key});
+  
+  @override
+  State<StatefulWidget> createState() => _CounterStateV2();
+}
+
+class _CounterStateV2 extends State<CounterBtnV2>{
+  int _counter = 0;
+
+  void _increment(){
+    setState(() {
+      ++_counter;
+      print("increment v2 ke triger, _counter:$_counter");
+    });
+  }
+
+  void _decrement(){
+    setState(() {
+      --_counter;
+      print("decrement v2 ke triger, _counter:$_counter");
+
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        CounterIncrementator(onPressed: _increment),
+        const SizedBox(width: 16),
+        CounterDecrementator(onPressed: _decrement),
+        const SizedBox(width: 16),
+        CounterDisplay(count: _counter)
+      ],
+    ); 
   }
   
 }
@@ -193,9 +277,17 @@ class TutorialHome extends StatelessWidget{
             const Center(
               child: SizedBox(
                 width: 400,
-                child: CounterBtn(),//panggil statefull widget nya BUKAN STATENYA LANGSUNG
+                child: CounterBtn() , //panggil statefull widget nya BUKAN STATENYA LANGSUNG
               ),
-            )
+            ),
+
+            const SizedBox(height: 20),
+             const Center(
+              child: SizedBox(
+                width: 400,
+                child: CounterBtnV2(),//panggil statefull widget nya BUKAN STATENYA LANGSUNG
+              ),
+            ),
           ],
         ),
         ),
