@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 // bikin komponen app bar custom sebenernya ada bawaan dari flutter tapi disini aku mau bikin
-// secara manual 
-class MyAppBar extends StatelessWidget{
+// secara manual
+class MyAppBar extends StatelessWidget {
   const MyAppBar({required this.title, super.key});
-  
+
   // field di dalam Widget subclass wajib di pakai "final"
   // ini kaya jadi property object yang dipanggil buat diisi valuenya
   final Widget title;
-  
-  // udah pasti harus overide bawaan nya udah kaya gitu code isi nanti didalam build 
+
+  // udah pasti harus overide bawaan nya udah kaya gitu code isi nanti didalam build
   @override
   Widget build(BuildContext context) {
-    // sistem container itu kaya div di html dengan tinggi 56 pixel dan padding 
+    // sistem container itu kaya div di html dengan tinggi 56 pixel dan padding
     // aturan padding pakai edgeinset jadi kaya bilang "aku mau bikin inset vertikal dan horizontal offset"
     // dengan ketentuan by default margin atas bawah nya 8 pixel dan tidak ada kanan kiri
     // karena itu aku atur jadi horizontal nya kanan kiri 8 pixel
@@ -28,57 +28,57 @@ class MyAppBar extends StatelessWidget{
       child: Row(
         children: [
           const IconButton(
-            onPressed: null, //null sama aja kaya disabled button 
+            onPressed: null, //null sama aja kaya disabled button
             icon: Icon(Icons.menu),
             tooltip: "Navigation Menu", //tooltip itu hint pas di hover
-            ),
-            Expanded(child: title),
-            const IconButton(
-              onPressed: null, 
-              icon: Icon(Icons.search),
-              tooltip: "Search",
-            )
+          ),
+          Expanded(child: title),
+          const IconButton(
+            onPressed: null,
+            icon: Icon(Icons.search),
+            tooltip: "Search",
+          ),
         ],
       ),
     );
   }
 }
 
-
 // kerangka custom untuk halaman nya
-class MyScaffold extends StatelessWidget{
+class MyScaffold extends StatelessWidget {
   const MyScaffold({super.key});
   @override
   Widget build(BuildContext context) {
-    // kaya jadi "alas kertas" kalo gapake Material biasanya layoutingnya bakalan aneh ibaratnya 
+    // kaya jadi "alas kertas" kalo gapake Material biasanya layoutingnya bakalan aneh ibaratnya
     // kita set "tema alas kertasnya" itu
-    // nah didalam "alas kertas" itu kita isi dengan AppBar yang kita bangun, lalu dibawahnya 
+    // nah didalam "alas kertas" itu kita isi dengan AppBar yang kita bangun, lalu dibawahnya
     // diisi text rata tengah "hello world" pakai expanded biar komponen ini "ngabisin" seluruh sisa layar dibawah AppBar
-    // dan berbeda dengan Row kaya diatas disini pakai collum mirip kaya display flex disusun dari atas kebawah 
+    // dan berbeda dengan Row kaya diatas disini pakai collum mirip kaya display flex disusun dari atas kebawah
     return Material(
       child: Column(
         children: [
           MyAppBar(
-            title:Text(
+            title: Text(
               "Example Title",
-              style: Theme.of(context).primaryTextTheme.titleLarge, //sttling pakai tema bawaan Material
-              )
+              style: Theme.of(context)
+                  .primaryTextTheme
+                  .titleLarge, //sttling pakai tema bawaan Material
             ),
-            Expanded(child: Center(child: Text("Hello World")))
+          ),
+          Expanded(child: Center(child: Text("Hello World"))),
         ],
       ),
-    );    
+    );
   }
-  
 }
 
 // bikin komponen button manual
-class MyButton extends StatelessWidget{
+class MyButton extends StatelessWidget {
   const MyButton({super.key});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
+      onTap: () {
         print("My Button was tapped");
       },
       child: Container(
@@ -88,48 +88,48 @@ class MyButton extends StatelessWidget{
           borderRadius: BorderRadius.circular(5),
           color: Colors.lightGreen[500],
         ),
-       child: const Center(child: Text("Engage"),), 
+        child: const Center(child: Text("Engage")),
       ),
     );
   }
 }
 
 // komponen class statefull untuk button counter
-// setup state counter btn pakai statefull 
+// setup state counter btn pakai statefull
 
 // Penjelasan "Satu Paket" Stateful Widget
 // Bayangkan StatefulWidget itu seperti sebuah Remote TV:
 // CounterBtn (Widget): Ini adalah fisiknya (plastik remotnya). Ini yang kamu panggil di kode lain.
 // _CounterState (State): Ini adalah mesin di dalamnya (baterai dan chip).
 //  Dia yang menyimpan data angka dan melakukan perubahan.
-class CounterBtn extends StatefulWidget{
+class CounterBtn extends StatefulWidget {
   const CounterBtn({super.key});
   // @override
   // State<StatefulWidget> createState() {
   //   return _CounterState();
   // }
   @override
-  State<StatefulWidget> createState()=>_CounterState();
+  State<StatefulWidget> createState() => _CounterState();
 }
 
 // setup statenya
-class _CounterState extends State<CounterBtn>{
+class _CounterState extends State<CounterBtn> {
   int _counter = 0;
 
-  void _increment(){
+  void _increment() {
     setState(() {
       _counter++;
       print("increment v1 ke triger, _counter:$_counter");
-
     });
   }
 
-  void _decrement(){
+  void _decrement() {
     setState(() {
       _counter--;
       print("decrement v1 ke triger, _counter:$_counter");
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -138,82 +138,87 @@ class _CounterState extends State<CounterBtn>{
       // cuma boleh widget
       // children itu buat banyak widget child itu cuma buat satu aja tergantung konteks mau pakai pembungkus apa
       children: <Widget>[
-        ElevatedButton(onPressed: _increment, child: const Text("Increment V1")),
+        ElevatedButton(
+          onPressed: _increment,
+          child: const Text("Increment V1"),
+        ),
         const SizedBox(width: 16),
-        ElevatedButton(onPressed: _decrement, child: const Text("Decrement V2")),
+        ElevatedButton(
+          onPressed: _decrement,
+          child: const Text("Decrement V2"),
+        ),
         const SizedBox(width: 16),
-        Text("Count: $_counter")
+        Text("Count: $_counter"),
       ],
     );
   }
-  
 }
 
-// dibawah ini adalah variasi handling state lebih reusable dan profesional dengan memisahkan 
-// menjadi 3 widget kecil 
+// dibawah ini adalah variasi handling state lebih reusable dan profesional dengan memisahkan
+// menjadi 3 widget kecil
 // CounterDisplay -> cuma untuk nampilin display
 // CounterIncrementator -> cuma untuk jadi tombol, dia tidak tau angka berapa yang sedang di tampilankan
-// Counter -> sebagai "otak" handling state nya 
+// Counter -> sebagai "otak" handling state nya
 
-class CounterDisplay extends StatelessWidget{
-  const CounterDisplay({required this.count,super.key});
+class CounterDisplay extends StatelessWidget {
+  const CounterDisplay({required this.count, super.key});
   final int count;
   @override
   Widget build(BuildContext context) {
-   return Text("Count : $count");
+    return Text("Count : $count");
   }
 }
 
-class CounterIncrementator extends StatelessWidget{
-  const CounterIncrementator({required this.onPressed,super.key});
+class CounterIncrementator extends StatelessWidget {
+  const CounterIncrementator({required this.onPressed, super.key});
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-  return ElevatedButton(
-    onPressed: onPressed, 
-    child: const Text("Increment V2")
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: const Text("Increment V2"),
     );
   }
-} 
+}
 
-class CounterDecrementator extends StatelessWidget{
-  const CounterDecrementator({required this.onPressed,super.key});
+class CounterDecrementator extends StatelessWidget {
+  const CounterDecrementator({required this.onPressed, super.key});
   final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-  return ElevatedButton(
-    onPressed: onPressed, 
-    child: const Text("Decrement V2")
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: const Text("Decrement V2"),
     );
   }
-} 
+}
 
-class CounterBtnV2 extends StatefulWidget{
+class CounterBtnV2 extends StatefulWidget {
   const CounterBtnV2({super.key});
-  
+
   @override
   State<StatefulWidget> createState() => _CounterStateV2();
 }
 
-class _CounterStateV2 extends State<CounterBtnV2>{
+class _CounterStateV2 extends State<CounterBtnV2> {
   int _counter = 0;
 
-  void _increment(){
+  void _increment() {
     setState(() {
       ++_counter;
       print("increment v2 ke triger, _counter:$_counter");
     });
   }
 
-  void _decrement(){
+  void _decrement() {
     setState(() {
       --_counter;
       print("decrement v2 ke triger, _counter:$_counter");
-
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -223,107 +228,214 @@ class _CounterStateV2 extends State<CounterBtnV2>{
         const SizedBox(width: 16),
         CounterDecrementator(onPressed: _decrement),
         const SizedBox(width: 16),
-        CounterDisplay(count: _counter)
+        CounterDisplay(count: _counter),
       ],
-    ); 
+    );
   }
-  
+}
+
+// class product
+class Product {
+  const Product({required this.name});
+  final String name;
+}
+
+typedef CartChangedCallback = void Function(Product product, bool inCart);
+
+class ShoppingListItem extends StatelessWidget {
+  ShoppingListItem({
+    required this.product,
+    required this.inCart,
+    required this.onCartChanged,
+  }) : super(key: ObjectKey(product));
+
+  final Product product;
+  final bool inCart;
+  final CartChangedCallback onCartChanged;
+
+  Color _getColor(BuildContext context) {
+    return inCart ? Colors.black54 : Theme.of(context).primaryColor;
+  }
+
+  TextStyle? _getTextStyle(BuildContext context) {
+    if (!inCart) return null;
+    return const TextStyle(
+      color: Colors.black54,
+      decoration: TextDecoration.lineThrough,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () {
+        onCartChanged(product, inCart);
+      },
+      leading: CircleAvatar(
+        backgroundColor: _getColor(context),
+        child: Text(product.name[0]),
+      ),
+      title: Text(product.name, style: _getTextStyle(context)),
+    );
+  }
+}
+
+class ShoppingList extends StatefulWidget {
+  const ShoppingList({required this.products, super.key});
+  final List<Product> products;
+  @override
+  State<ShoppingList> createState() => _ShoppingListState();
+}
+
+class _ShoppingListState extends State<ShoppingList> {
+  final _shoppingCart = <Product>{};
+
+  void _handleCartChanged(Product product, bool inCart) {
+    setState(() {
+      if (!inCart) {
+        _shoppingCart.add(product);
+      } else {
+        _shoppingCart.remove(product);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Shopping List")),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: widget.products.map((product) {
+          return ShoppingListItem(
+            product: product,
+            inCart: _shoppingCart.contains(product),
+            onCartChanged: _handleCartChanged,
+          );
+        }).toList(),
+      ),
+    );
+  }
 }
 
 // bikin komponen app bar + body didalam scaffold bedanya ini pakai komponen dari flutter nya
 // const tidak boleh berisi fungsi
-class TutorialHome extends StatelessWidget{
+class TutorialHome extends StatelessWidget {
   const TutorialHome({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
+      appBar: AppBar(
         leading: IconButton(
-          onPressed: (){
+          onPressed: () {
             print("btn navigasi ditekan");
-          }, 
+          },
           icon: Icon(Icons.menu),
           tooltip: "Navigation Home",
+        ),
+        title: const Text('Example Title'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              print("btn search ditekan");
+            },
+            icon: Icon(Icons.search),
+            tooltip: "Search",
           ),
-          title: const Text('Example Title'),
-          actions: [
-            IconButton(
-              onPressed: (){
-                print("btn search ditekan");
-              }, 
-              icon: Icon(Icons.search),
-              tooltip: "Search",
-            )
-          ],
-      ) ,
+        ],
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),//kasih padding defaultnya 8 pixel semua sisi disini aku atur 20 pixel
+        padding: const EdgeInsets.all(
+          10.0,
+        ), //kasih padding defaultnya 8 pixel semua sisi disini aku atur 20 pixel
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Center(child: Text("hello world")),
-           
-            const SizedBox(height: 20),// jeda antara teks dengan MyButton
-              // agar MyButton tidak selebar layar, bungkus dengan Center dikombo SizedBox
-            const Center(
-              child: SizedBox(
-                width: 200,
-                child: MyButton(),
-              ),
-            ),
-            
+
+            const SizedBox(height: 20), // jeda antara teks dengan MyButton
+            // agar MyButton tidak selebar layar, bungkus dengan Center dikombo SizedBox
+            const Center(child: SizedBox(width: 200, child: MyButton())),
+
             const SizedBox(height: 20),
-            
+
             const Center(
               child: SizedBox(
                 width: 400,
-                child: CounterBtn() , //panggil statefull widget nya BUKAN STATENYA LANGSUNG
+                child:
+                    CounterBtn(), //panggil statefull widget nya BUKAN STATENYA LANGSUNG
               ),
             ),
 
             const SizedBox(height: 20),
-             const Center(
+            const Center(
               child: SizedBox(
                 width: 400,
-                child: CounterBtnV2(),//panggil statefull widget nya BUKAN STATENYA LANGSUNG
+                child:
+                    CounterBtnV2(), //panggil statefull widget nya BUKAN STATENYA LANGSUNG
+              ),
+            ),
+
+            // const SizedBox(height: 20),
+            const Center(
+              child: SizedBox(
+                width: 1200,
+                height: 400,
+                child: ShoppingList(
+                  products: [
+                    Product(name: "Laptop"),
+                    Product(name: "Hp"),
+                    Product(name: "Mesin Cuci"),
+                    Product(name: "Mobil"),
+                    Product(name: "Kulkas"),
+                  ],
+                ),
               ),
             ),
           ],
         ),
-        ),
-        //FAB
+      ),
+      //FAB
       floatingActionButton: FloatingActionButton(
-                            onPressed: (){
-                              print("FAB ditekan");
-                            },
-                            tooltip: "add",
-                            child: Icon(Icons.add),
-                            ),
+        onPressed: () {
+          print("FAB ditekan");
+        },
+        tooltip: "add",
+        child: Icon(Icons.add),
+      ),
     );
   }
-  
 }
-
 
 // main entry jantung app
 void main() {
-  // wajib ada 
+  // wajib ada
   runApp(
     // MaterialApp itu pembungkus besar, dia yang ngatur navigasi, tema warna, dan bahasa
     // ada title digunakan untuk kebutuhan perpindahan OS senangkepku,
     // ada home buat "isinya" dan pakai SafeArea buat kebutuhan nanti kalo dimobile layoutingnya ga nabrak
     // sama notch kamera atau bar indikator di hp di web emang ga terlalu keliatan tapi di mobile bakalan ngaruh
-    
-    // const MaterialApp(
-    //   title: "My App", 
-    //   home: SafeArea(child: MyScaffold()), 
-    // )
 
+    // const MaterialApp(
+    //   title: "My App",
+    //   home: SafeArea(child: MyScaffold()),
+    // )
     const MaterialApp(
-      debugShowCheckedModeBanner: false,//buat ngilagin label "debug"
-      title: "My App", 
-      home: TutorialHome(), 
-    )
+      debugShowCheckedModeBanner: false, //buat ngilagin label "debug"
+      title: "My App",
+      home: TutorialHome(),
+    ),
+    // const MaterialApp(
+    //   title: "Shopping App",
+    //   home: ShoppingList(
+    //     products: [
+    //       Product(name: "Laptop"),
+    //       Product(name: "Hp"),
+    //       Product(name: "Mesin Cuci"),
+    //       Product(name: "Mobil"),
+    //       Product(name: "Kulkas"),
+    //     ],
+    //   ),
+    // ),
   );
 }
-
